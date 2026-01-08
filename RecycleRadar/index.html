@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RecycleRadar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f8f6;
+    }
+
+    header {
+      background: #2e7d32;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #map {
+      height: 350px;
+      width: 100%;
+    }
+
+    .section {
+      padding: 15px;
+    }
+
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 10px;
+    }
+
+    .tips {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .card {
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    button {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #1b5e20;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>♻️ RecycleRadar</h1>
+  <p>Find nearby recycling centers & learn waste sorting</p>
+</header>
+
+<div id="container">
+
+  <!-- Map Section -->
+  <div id="map"></div>
+
+  <!-- Recycling Tips -->
+  <div class="section">
+    <h2>🗂️ Waste Sorting Guidelines</h2>
+    <div class="tips">
+      <div class="card">
+        <strong>Plastic</strong>
+        <p>Bottles, containers, packaging</p>
+      </div>
+      <div class="card">
+        <strong>Paper</strong>
+        <p>Newspapers, cardboard, books</p>
+      </div>
+      <div class="card">
+        <strong>Glass</strong>
+        <p>Bottles, jars (clean only)</p>
+      </div>
+      <div class="card">
+        <strong>Metal</strong>
+        <p>Cans, foil, tins</p>
+      </div>
+      <div class="card">
+        <strong>E-Waste</strong>
+        <p>Phones, batteries, chargers</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Help -->
+  <div class="section">
+    <h2>🧭 Navigation</h2>
+    <p>Click on a recycling center marker to get directions.</p>
+  </div>
+
+</div>
+
+<footer>
+  🌍 RecycleRadar – Promoting Sustainable Living
+</footer>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+  // Initialize map
+  const map = L.map('map').setView([20.5937, 78.9629], 5); // India center
+
+  // OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  // User location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(position => {
+      const userLat = position.coords.latitude;
+      const userLng = position.coords.longitude;
+
+      map.setView([userLat, userLng], 13);
+
+      L.marker([userLat, userLng])
+        .addTo(map)
+        .bindPopup("📍 You are here")
+        .openPopup();
+    });
+  }
+
+  // Sample recycling centers (can be replaced with real data)
+  const recyclingCenters = [
+    {
+      name: "Green Earth Recycling Center",
+      lat: 12.9716,
+      lng: 77.5946
+    },
+    {
+      name: "Eco Recycle Hub",
+      lat: 17.3850,
+      lng: 78.4867
+    },
+    {
+      name: "Clean City Recyclers",
+      lat: 19.0760,
+      lng: 72.8777
+    }
+  ];
+
+  // Add markers
+  recyclingCenters.forEach(center => {
+    const googleMapsLink =
+      `https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}`;
+
+    L.marker([center.lat, center.lng])
+      .addTo(map)
+      .bindPopup(`
+        <strong>${center.name}</strong><br>
+        <a href="${googleMapsLink}" target="_blank">
+          Get Directions
+        </a>
+      `);
+  });
+</script>
+
+</body>
+</html>
